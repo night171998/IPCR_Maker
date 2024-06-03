@@ -81,7 +81,8 @@ body {
 }
 
 #inputs label {
-    margin-right: 10px;
+    display: block;
+    margin-bottom: 5px;
 }
 
 #inputs input {
@@ -104,6 +105,12 @@ body {
 
 #transpired-container, #ipcr-container {
     width: 100%;
+}
+
+#transpired-container div, #ipcr-container div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
 }
 
 @media (max-width: 480px) {
