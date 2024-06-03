@@ -109,6 +109,25 @@ body {
 
 #transpired-container, #ipcr-container {
     width: 100%;
+    margin-bottom: 10px;
+}
+
+#transpired-container div, #ipcr-container div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#transpired-container label, #ipcr-container label {
+    margin-right: 10px;
+}
+
+.remove-transpired, .remove-ipcr {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    margin-left: 10px;
 }
 
 @media (max-width: 480px) {
