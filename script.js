@@ -1,134 +1,120 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const calendar = document.getElementById("calendar");
-    const monthYear = document.getElementById("month-year");
-    const prev = document.getElementById("prev");
-    const next = document.getElementById("next");
-    const daysContainer = document.getElementById("days");
-    const transpiredContainer = document.getElementById("transpired-container");
-    const ipcrContainer = document.getElementById("ipcr-container");
-    const exportButton = document.getElementById("export");
-    const employeeNumberInput = document.getElementById("employee-number");
+document.addEventListener('DOMContentLoaded', function() {
+    const calendar = document.getElementById('calendar');
+    const monthYear = document.getElementById('month-year');
+    const daysContainer = document.getElementById('days');
+    const prevButton = document.getElementById('prev');
+    const nextButton = document.getElementById('next');
+    const exportButton = document.getElementById('export');
 
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    let selectedDates = new Map();
+    const transpiredContainer = document.getElementById('transpired-container');
+    const ipcrContainer = document.getElementById('ipcr-container');
+    const employeeNumberInput = document.getElementById('employee-number');
 
-    function generateCalendar(month, year) {
-        const firstDay = new Date(year, month).getDay();
-        const daysInMonth = 32 - new Date(year, month, 32).getDate();
-        
-        monthYear.textContent = `${new Date(year, month).toLocaleString('default', { month: 'long' })} ${year}`;
-        daysContainer.innerHTML = "";
+    let currentDate = new Date();
+    let selectedDates = [];
+
+    function updateCalendar() {
+        daysContainer.innerHTML = '';
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+
+        monthYear.textContent = currentDate.toLocaleDateString('default', { month: 'long', year: 'numeric' });
 
         for (let i = 0; i < firstDay; i++) {
-            const emptyDiv = document.createElement("div");
+            const emptyDiv = document.createElement('div');
             daysContainer.appendChild(emptyDiv);
         }
 
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dayDiv = document.createElement("div");
+        for (let day = 1; day <= lastDate; day++) {
+            const dayDiv = document.createElement('div');
             dayDiv.textContent = day;
-            dayDiv.classList.add("day");
-
-            const dateKey = `${year}-${month + 1}-${day}`;
-            if (selectedDates.has(dateKey)) {
-                dayDiv.classList.add("selected");
+            dayDiv.addEventListener('click', () => toggleDateSelection(day));
+            if (selectedDates.some(date => date.getDate() === day && date.getMonth() === month && date.getFullYear() === year)) {
+                dayDiv.classList.add('selected');
             }
-
-            dayDiv.addEventListener("click", () => {
-                if (selectedDates.has(dateKey)) {
-                    selectedDates.delete(dateKey);
-                    dayDiv.classList.remove("selected");
-                } else {
-                    selectedDates.set(dateKey, []);
-                    dayDiv.classList.add("selected");
-                }
-            });
-
             daysContainer.appendChild(dayDiv);
         }
     }
 
-    function updateCalendar() {
-        generateCalendar(currentMonth, currentYear);
+    function toggleDateSelection(day) {
+        const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        const dateIndex = selectedDates.findIndex(selectedDate => 
+            selectedDate.getDate() === date.getDate() && 
+            selectedDate.getMonth() === date.getMonth() && 
+            selectedDate.getFullYear() === date.getFullYear()
+        );
+        
+        if (dateIndex >= 0) {
+            // Date is already selected, deselect it
+            selectedDates.splice(dateIndex, 1);
+        } else {
+            // Date is not selected, select it
+            selectedDates.push(date);
+        }
+        
+        updateCalendar();
+        console.log(`Selected dates: ${selectedDates}`);
     }
 
-    prev.addEventListener("click", () => {
-        currentMonth--;
-        if (currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
-        }
-        updateCalendar();
-    });
-
-    next.addEventListener("click", () => {
-        currentMonth++;
-        if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
-        }
-        updateCalendar();
-    });
-
-    document.getElementById("add-transpired").addEventListener("click", () => {
-        const newTranspired = document.createElement("div");
-        newTranspired.innerHTML = `<label for="transpired">What has Transpired:</label><input type="text" class="transpired"><button class="remove-transpired">Remove</button>`;
-        transpiredContainer.appendChild(newTranspired);
-
-        newTranspired.querySelector(".remove-transpired").addEventListener("click", () => {
-            transpiredContainer.removeChild(newTranspired);
-        });
-    });
-
-    document.getElementById("add-ipcr").addEventListener("click", () => {
-        const newIpcr = document.createElement("div");
-        newIpcr.innerHTML = `<label for="ipcr">IPCR Code:</label><input type="text" class="ipcr"><button class="remove-ipcr">Remove</button>`;
-        ipcrContainer.appendChild(newIpcr);
-
-        newIpcr.querySelector(".remove-ipcr").addEventListener("click", () => {
-            ipcrContainer.removeChild(newIpcr);
-        });
-    });
-
-    exportButton.addEventListener("click", () => {
-        const transpiredElements = transpiredContainer.querySelectorAll(".transpired");
-        const ipcrElements = ipcrContainer.querySelectorAll(".ipcr");
+    function exportToExcel() {
         const employeeNumber = employeeNumberInput.value;
+        const transpiredInputs = document.querySelectorAll('#transpired-container input[type="text"]');
+        const ipcrInputs = document.querySelectorAll('#ipcr-container input[type="text"]');
 
-        const data = [];
-        selectedDates.forEach((value, key) => {
-            transpiredElements.forEach(transpired => {
-                ipcrElements.forEach(ipcr => {
-                    data.push({
-                        Date: key,
-                        'What has Transpired': transpired.value,
-                        'IPCR Code': ipcr.value,
-                        'Employee Number': employeeNumber
-                    });
-                });
+        // Sort selected dates in chronological order
+        selectedDates.sort((a, b) => a - b);
+
+        const workbook = XLSX.utils.book_new();
+        const worksheet_data = [['Date', 'What has Transpired', 'IPCR Code', 'Employee Number']];
+        
+        selectedDates.forEach(date => {
+            transpiredInputs.forEach((transpiredInput, index) => {
+                const transpired = transpiredInput.value;
+                const ipcr = ipcrInputs[index].value;
+                worksheet_data.push([date.toLocaleDateString(), transpired, ipcr, employeeNumber]);
             });
         });
+        
+        const worksheet = XLSX.utils.aoa_to_sheet(worksheet_data);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        XLSX.writeFile(workbook, 'Selected_Dates.xlsx');
+    }
 
-        data.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+    function addTranspiredInput() {
+        const newInput = document.createElement('div');
+        newInput.innerHTML = `
+            <label for="transpired">What has Transpired:</label>
+            <input type="text">
+        `;
+        transpiredContainer.appendChild(newInput);
+    }
 
-        const worksheet = XLSX.utils.json_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    function addIPCRInput() {
+        const newInput = document.createElement('div');
+        newInput.innerHTML = `
+            <label for="ipcr">IPCR Code:</label>
+            <input type="text">
+        `;
+        ipcrContainer.appendChild(newInput);
+    }
 
-        // Wrap text style
-        const wrapTextStyle = { alignment: { wrapText: true } };
-
-        // Apply wrap text style to "What has Transpired" column
-        const range = XLSX.utils.decode_range(worksheet['!ref']);
-        for (let row = range.s.r; row <= range.e.r; row++) {
-            const cellAddress = XLSX.utils.encode_cell({ r: row, c: 1 }); // Column B is index 1
-            if (!worksheet[cellAddress]) worksheet[cellAddress] = {};
-            worksheet[cellAddress].s = wrapTextStyle;
-        }
-
-        XLSX.writeFile(workbook, "interactive_calendar.xlsx");
+    prevButton.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        updateCalendar();
     });
+
+    nextButton.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        updateCalendar();
+    });
+
+    exportButton.addEventListener('click', exportToExcel);
+
+    document.getElementById('add-transpired').addEventListener('click', addTranspiredInput);
+    document.getElementById('add-ipcr').addEventListener('click', addIPCRInput);
 
     updateCalendar();
 });
