@@ -12,7 +12,8 @@ body {
 #calendar {
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 320px;
+    width: 100%;
+    max-width: 320px;
     border-radius: 10px;
     overflow: hidden;
 }
@@ -69,10 +70,14 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    max-width: 320px;
+    padding: 0 10px;
 }
 
 #inputs div {
     margin-bottom: 10px;
+    width: 100%;
 }
 
 #inputs label {
@@ -81,7 +86,7 @@ body {
 
 #inputs input {
     padding: 5px;
-    width: 200px;
+    width: calc(100% - 10px);
 }
 
 #inputs button {
@@ -99,4 +104,32 @@ body {
 
 #transpired-container, #ipcr-container {
     width: 100%;
+}
+
+@media (max-width: 480px) {
+    #calendar, #inputs {
+        width: 100%;
+        max-width: none;
+    }
+
+    #header {
+        padding: 5px;
+    }
+
+    #header button {
+        font-size: 14px;
+    }
+
+    #month-year {
+        font-size: 14px;
+    }
+
+    #days div {
+        padding: 8px;
+    }
+
+    #inputs button {
+        width: 100%;
+        padding: 10px;
+    }
 }
