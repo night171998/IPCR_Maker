@@ -1,0 +1,102 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+#calendar {
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #3a87ad;
+    color: white;
+}
+
+#header button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#month-year {
+    font-size: 16px;
+}
+
+#weekdays, #days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+#weekdays {
+    background-color: #f7f7f7;
+    font-weight: bold;
+}
+
+#days div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#days div:hover {
+    background-color: #e6e6e6;
+}
+
+.selected {
+    background-color: #3a87ad;
+    color: white;
+    border-radius: 50%;
+}
+
+#inputs {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#inputs div {
+    margin-bottom: 10px;
+}
+
+#inputs label {
+    margin-right: 10px;
+}
+
+#inputs input {
+    padding: 5px;
+    width: 200px;
+}
+
+#inputs button {
+    padding: 10px 20px;
+    background-color: #3a87ad;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#inputs button:hover {
+    background-color: #357a9a;
+}
+
+#transpired-container, #ipcr-container {
+    width: 100%;
+}

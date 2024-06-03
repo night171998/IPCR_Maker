@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Calendar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="calendar">
+        <div id="header">
+            <button id="prev">&lt;</button>
+            <div id="month-year"></div>
+            <button id="next">&gt;</button>
+        </div>
+        <div id="weekdays">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+        </div>
+        <div id="days"></div>
+    </div>
+    <div id="inputs">
+        <div id="transpired-container">
+            <div>
+                <label for="transpired">What has Transpired:</label>
+                <input type="text" id="transpired">
+                <button id="add-transpired">Add</button>
+            </div>
+        </div>
+        <div id="ipcr-container">
+            <div>
+                <label for="ipcr">IPCR Code:</label>
+                <input type="text" id="ipcr">
+                <button id="add-ipcr">Add</button>
+            </div>
+        </div>
+        <div>
+            <label for="employee-number">Employee Number:</label>
+            <input type="text" id="employee-number">
+        </div>
+        <button id="export">Print Excel Sheet</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
