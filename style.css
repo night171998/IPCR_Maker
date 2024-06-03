@@ -7,12 +7,15 @@ body {
     height: 100vh;
     margin: 0;
     background-color: #f0f0f0;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 #calendar {
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 320px;
+    width: 100%;
+    max-width: 320px;
     border-radius: 10px;
     overflow: hidden;
 }
@@ -69,10 +72,16 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    max-width: 320px;
 }
 
 #inputs div {
     margin-bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #inputs label {
@@ -81,7 +90,7 @@ body {
 
 #inputs input {
     padding: 5px;
-    width: 200px;
+    width: calc(100% - 100px);
 }
 
 #inputs button {
@@ -91,6 +100,7 @@ body {
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    margin-top: 10px;
 }
 
 #inputs button:hover {
@@ -99,4 +109,31 @@ body {
 
 #transpired-container, #ipcr-container {
     width: 100%;
+}
+
+@media (max-width: 480px) {
+    #calendar {
+        width: 100%;
+    }
+
+    #inputs input {
+        width: calc(100% - 90px);
+    }
+
+    #inputs button {
+        width: 100%;
+    }
+
+    #inputs div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #inputs label, #inputs input {
+        width: 100%;
+    }
+
+    #inputs label {
+        margin-bottom: 5px;
+    }
 }
